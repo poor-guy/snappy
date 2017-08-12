@@ -1,8 +1,12 @@
 const Koa = require('koa');
 const app = new Koa();
+const getEnv = require("getenv");
 
+const mongoURL = getEnv("MONGO_URL")
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://mongo/test');
+mongoose.connect(mongoURL);
+
+const Log = require('./log.model');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -11,10 +15,9 @@ db.once('open', function() {
 });
 
 app.use(async (ctx, next) => {
-  const start = Date.now();
+  const createdAt = Date.now();
+  await new Log({ message: `${ctx.method} ${ctx.url}`, createdAt}).save();
   await next();
-  const ms = Date.now() - start;
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
 app.use(ctx => {
