@@ -2,9 +2,7 @@ const Koa = require('koa');
 const app = new Koa();
 const getEnv = require("getenv");
 
-const mongoHost = getEnv("MONGO_SERVICE_HOST")
-const mongoPort = getEnv("MONGO_SERVICE_PORT")
-const mongoURL = `mongodb://${mongoHost}:${mongoPort}/logs`
+const mongoURL = `mongodb://mongo-service/logs`
 var mongoose = require('mongoose');
 mongoose.connect(mongoURL);
 
